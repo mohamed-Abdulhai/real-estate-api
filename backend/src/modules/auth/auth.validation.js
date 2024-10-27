@@ -11,10 +11,6 @@ export const registerSchema = Joi.object({
         'password.max': 'Password must be at most 30 characters long',
         'password.pattern.base': 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
     }),
-    confirmPassword: Joi.string().valid(Joi.ref('password')).required().messages({
-        'confirmPassword.required': 'Confirm password is required',
-        'confirmPassword.valid': 'Confirm password must match password'
-    }),
     phone: Joi.string().pattern(/^(?:\+971|00971|971|0)?(?:50|51|52|54|55|56|2|3|4|6|7|9)\d{7}$/m).required().messages({
         'phone.required': 'Phone is required',
         'phone.pattern.base':  'Invalid UAE phone number'
@@ -64,15 +60,15 @@ export const changePasswordSchema = Joi.object({
         'oldPassword.max': 'Old password must be at most 30 characters long',
         'oldPassword.pattern.base': 'Old password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
     }),
-    newPassword: Joi.string().min(8).max(30).pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,30}$/).required().messages({
-        'newPassword.required': 'New password is required',
-        'newPassword.min': 'New password must be at least 8 characters long',
-        'newPassword.max': 'New password must be at most 30 characters long',
-        'newPassword.pattern.base': 'New password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
+    password: Joi.string().min(8).max(30).pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,30}$/).required().messages({
+        'password.required': 'Password is required',
+        'password.min': 'Password must be at least 8 characters long',
+        'password.max': 'Password must be at most 30 characters long',
+        'password.pattern.base': 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
     }),
-    confirmPassword: Joi.string().valid(Joi.ref('newPassword')).required().messages({
+    confirmPassword: Joi.string().valid(Joi.ref('password')).required().messages({
         'confirmPassword.required': 'Confirm password is required',
-        'confirmPassword.valid': 'Confirm password must match new password'
+        'confirmPassword.valid': 'Confirm password must match Password'
     })
 })
 
@@ -86,14 +82,10 @@ export const resetPasswordSchema = Joi.object({
     token: Joi.string().required().messages({
         'token.required': 'Token is required'
     }),
-    newPassword: Joi.string().min(8).max(30).pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,30}$/).required().messages({
-        'newPassword.required': 'New password is required',
-        'newPassword.min': 'New password must be at least 8 characters long',
-        'newPassword.max': 'New password must be at most 30 characters long',
-        'newPassword.pattern.base': 'New password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
+    password: Joi.string().min(8).max(30).pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,30}$/).required().messages({
+        'password.required': 'Password is required',
+        'password.min': 'Password must be at least 8 characters long',
+        'password.max': 'Password must be at most 30 characters long',
+        'password.pattern.base': 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
     }),
-    confirmPassword: Joi.string().valid(Joi.ref('newPassword')).required().messages({
-        'confirmPassword.required': 'Confirm password is required',
-        'confirmPassword.valid': 'Confirm password must match new password'
-    })
 })

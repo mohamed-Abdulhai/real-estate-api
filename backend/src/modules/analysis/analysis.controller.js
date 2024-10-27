@@ -1,20 +1,7 @@
 import { User } from "../../../DB/models/user.model.js";
-import { catchError } from "../../utilities/error/error.js";
+import {Property} from '../../../DB/models/property.model.js'
+import { analsizeHandler } from "../../handlers/handler.js";
 
-export const userAnalysis = catchError(async(req,res,next)=>{
-    const usersCount = await User.find().countDocuments()
+export const userAnalysis = analsizeHandler(User)
 
-    return res.status(200).json({
-        message: `Total users: ${usersCount}`,
-        statusMessage: "success"
-    })
-})
-
-export const propertyAnalysis = catchError(async(req,res,next)=>{
-    const propertiesCount = await Property.find().countDocuments()
-
-    return res.status(200).json({
-        message: `Total properties: ${propertiesCount}`,
-        statusMessage: "success"
-    })
-})
+export const propertyAnalysis = analsizeHandler(Property)

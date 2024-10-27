@@ -31,7 +31,8 @@ const schema = new mongoose.Schema({
     phone:{
         type:String,
         required:[true,'phone is required'],
-        match:/^(?:\+971|00971|971|0)?(?:50|51|52|54|55|56|2|3|4|6|7|9)\d{7}$/m
+        match:/^(?:\+971|00971|971|0)?(?:50|51|52|54|55|56|2|3|4|6|7|9)\d{7}$/m,
+        unique:true,
     },
     confirmPassword:{
         type:Boolean,
@@ -69,5 +70,10 @@ const schema = new mongoose.Schema({
 },{timestamps:true});
 
 schema.plugin(mongoosePaginate)
+
+schema.pre('save',async ()=>{
+    const userName = this.firstName + ' ' + this.lastName
+    this.username = userName.toLowerCase().replace(/\s/g, '-')
+})
 
 export const User = mongoose.model('user', schema);

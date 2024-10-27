@@ -8,9 +8,9 @@ const router = Router()
 
 router.use('/auth',authRouter)
 
-router.use('/user',userRouter)
+router.use('/users',userRouter)
 
-router.use('/property',propertyRouter)
+router.use('/properties',propertyRouter)
 
 router.use('/analysis',analysisRouter)
 

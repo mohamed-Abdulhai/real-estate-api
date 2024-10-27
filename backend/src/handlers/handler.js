@@ -62,8 +62,40 @@ export const deleteAllHandler = (model)=>{
     
     return res.status(200).json({
         data: documents,
-        statusMessage:`All ${model.collection.name}s deleted successfully`
+        statusMessage:`All ${model.collection.name} deleted successfully`
     })
 
 })
+}
+
+export const searchHandler = (model)=>{
+    return catchError(async(req,res,next)=>{
+        const searchQuery = req.query.search
+        const documents = await model.find({$text:{$search:searchQuery}})
+        
+        return res.status(200).json({
+            data: documents,
+            statusMessage: "success"
+        })
+    })
+}
+
+export const analsizeHandler = (model)=>{
+    return catchError(async(req,res,next)=>{
+        const documentsCount = await model.find().countDocuments()
+        return res.status(200).json({
+            message: `Total ${model.collection.name}: ${documentsCount}`,
+            statusMessage: "success"
+        })
+    })
+}
+
+export const findTheExistsHandler = (model,key)=>{
+    return catchError(async(req,res,next)=>{
+        const document = await model.findOne({key:req.body.key})
+        
+        if(document) return next(new AppError(`${key} already exists`, 400,'failed'))
+        
+        next()
+    })
 }

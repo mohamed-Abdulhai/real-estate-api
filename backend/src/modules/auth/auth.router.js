@@ -2,17 +2,19 @@ import { Router } from "express";
 import { changePassword, forgotPassword, login, logout, register, resetPassword, verifyEmail } from "./auth.controller.js";
 import {validate} from '../../middlewares/validate.js'
 import { changePasswordSchema, forgotPasswordSchema, loginSchema, registerSchema, resetPasswordSchema, verifyEmailSchema } from './auth.validation.js'
+import { findTheExistsHandler } from "../../handlers/handler.js";
+import { User } from "../../../DB/models/user.model.js";
+import { hashPassword } from "./auth.middleware.js";
+
 const router = Router()
 
-router.post('/register',validate(registerSchema),register)
+router.post('/register',validate(registerSchema),findTheExistsHandler(User,email),findTheExistsHandler(User,phone),hashPassword,register)
 router.post('/login',validate(loginSchema),login)
 router.post('/logout',logout)
 router.get('/verify-email/:token',validate(verifyEmailSchema),verifyEmail)
 router.post('/forgot-password', validate(forgotPasswordSchema),forgotPassword)
-router.post('/reset-password/:token', validate(resetPasswordSchema),resetPassword)
-router.put('change-password',validate(changePasswordSchema),changePassword)
-
-
+router.put('/reset-password/:token', validate(resetPasswordSchema),hashPassword,resetPassword)
+router.put('/change-password',validate(changePasswordSchema),hashPassword,changePassword)
 
 
 export default router

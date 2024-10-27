@@ -9,6 +9,8 @@ router.route('/')
 .get(getAllUsers)
 .delete(deleteAllUsers)
 
+router.get('/profile/:id', validate(mongodbObjectIdSchema), getUser)
+
 router.route('/:id')
 .get(validate(mongodbObjectIdSchema),getUser)
 .put(updateUser)
