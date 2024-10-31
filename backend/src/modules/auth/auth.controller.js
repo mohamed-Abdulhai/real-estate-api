@@ -8,6 +8,9 @@ import { ConfirmEmailTemplate } from '../../utilities/error/email/confirmEmail/c
 import { resetPasswordTemplate } from '../../utilities/error/email/resetPasswordTemplate.js'
 import { generateAccessToken, generateRefreshToken } from './auth.middleware.js'
 
+const isProduction = process.env.MOOD === 'production';
+
+
 export const register = catchError(async (req, res, next) => {
   const user = await User.create(req.body);
   
@@ -28,7 +31,6 @@ export const register = catchError(async (req, res, next) => {
 
 
 export const login = catchError(async (req,res,next)=>{
-  const isProduction = process.env.MOOD === 'production';
   const {email,password} = req.body
   const user = await User.findOne({email})
   if(!user) return next(new AppError('Invalid email or password',422,'failed'))
@@ -72,7 +74,7 @@ export const verifyEmail = catchError(async (req, res, next) => {
 
   jwt.verify(token, process.env.SECRET_KEY, async (error, decoded) => {
     if (error) {
-      return next(new AppError(error.message, 400, 'failed'));
+      return next(new AppError('Invalid token', 400, 'failed'))
     }
     const user = await User.findByIdAndUpdate(
       decoded.id,
@@ -83,15 +85,33 @@ export const verifyEmail = catchError(async (req, res, next) => {
     if (!user) {
       return next(new AppError('User not found', 400, 'failed'));
     }
-
-    user.password = undefined;
-
     res.status(200).json({
       statusMessage: 'Email verified successfully',
     });
   });
 });
 
+
+export const refreshToken = catchError(async (req,res,next)=>{
+  const { refreshToken } = req.cookies
+  if (!refreshToken) return next(new AppError('Please login no token provided', 403, 'failed'))
+    jwt.verify(refreshToken,process.env.REFRESH_TOKEN_SECRET_KEY,async(error,decoded)=>{
+      
+      if(error) return next(new AppError('Invalid or expired refresh token', 403, 'failed'))
+      const {id,role} = decoded
+    const newAccessToken = generateAccessToken(id,role)
+    res.cookie('accessToken',newAccessToken,{
+      httpOnly: true,
+      maxAge: 15 * 60 * 1000, // 15 minutes
+      sameSite: 'Strict',
+      secure: isProduction 
+    });
+    res.status(200).json({
+      statusMessage:'Access token is refreshed successfully'
+    })
+  })
+  
+})
 
 export const forgotPassword = catchError(async(req,res,next)=>{
   const user = await User.findOne({email:req.body.email})
@@ -120,7 +140,7 @@ export const changePassword = catchError(async(req,res,next)=>{
   const user = await User.findById(req.user.id)
   const matchPassword = bcrypt.compareSync(req.body.oldPassword,user.password)
   !matchPassword && next(new AppError('Old password is incorrect',401,'failed'))
-  const newUser = await User.findByIdAndUpdate(req.user.id,{password:req.body.oldPassword},{new:true})
+  const newUser = await User.findByIdAndUpdate(req.user.id,{password},{new:true})
   newUser.password = undefined
   res.status(200).json({
     data: newUser,

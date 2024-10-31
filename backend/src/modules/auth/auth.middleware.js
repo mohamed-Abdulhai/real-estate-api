@@ -36,3 +36,24 @@ export const generateRefreshToken = (id,role)=>{
     const refreshToken = jwt.sign({id,role},process.env.REFRESH_TOKEN_SECRET_KEY,{subject:'refreshToken',expiresIn:'7d'})
     return refreshToken
 }
+
+export const authentication = catchError(async (req,res,next)=>{
+    const accessToken = req.cookies.accessToken
+    if(!accessToken) return next(new AppError('Unauthorized',401,'failed'))
+    
+    jwt.verify(accessToken,process.env.ACCESS_TOKEN_SECRET_KEY, (error,decoded)=>{
+        if(error) return next(new AppError('Invalid token or expired',401,'failed'))
+        req.user = decoded
+        next()
+    })
+})
+
+export const authorize = (...roles) => {
+    return (req, res, next) => {
+      if (!roles.includes(req.user.role)) {
+        return next(new AppError('Unauthorized',401,'failed'));
+      }
+      next();
+    };
+  };
+

@@ -40,8 +40,8 @@ const schema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['admin', 'user'],
-        default: 'user'
+        enum: [10, 20],
+        default: 10
     },
     typeOfUser: {
         type: String,
