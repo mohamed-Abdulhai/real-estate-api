@@ -7,10 +7,24 @@
     "dev": "nodemon server.js",
     "start": "node server.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "keywords": [
+    "real-estate",
+    "mern",
+    "mongodb",
+    "express",
+    "react",
+    "nodejs",
+    "jwt",
+    "redux",
+    "formik",
+    "yup",
+    "auth",
+    "joi",
+    "property-management"
+  ],
+  "author": "MOHAMED ABDULHAI",
+  "license": "MIT",
+  "description": "Full-stack real estate web application built using the MERN stack (MongoDB, Express.js, React, Node.js).",
   "dependencies": {
     "bcrypt": "^5.1.1",
     "cloudinary": "^2.5.1",

@@ -1,79 +1,74 @@
 import mongoose from "mongoose";
-import mongoosePaginate from 'mongoose-paginate-v2'
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 const schema = new mongoose.Schema({
-    firstName:{
-        type:String,
-        min:[2,'minimum first Name should be 2 characters'],
-        max:[32,'maximum first Name should be 32 characters'],
-        required:[true,'first Name is required'],
-        trim:true
+    firstName: {
+        type: String,
+        min: [2, 'minimum first Name should be 2 characters'],
+        max: [32, 'maximum first Name should be 32 characters'],
+        required: [true, 'first Name is required'],
+        trim: true
     },
-    lastName:{
-        type:String,
-        min:[2,'minimum last Name should be 2 characters'],
-        max:[32,'maximum last Name should be 32 characters'],
-        required:[true,'last Name is required'],
-        trim:true
+    lastName: {
+        type: String,
+        min: [2, 'minimum last Name should be 2 characters'],
+        max: [32, 'maximum last Name should be 32 characters'],
+        required: [true, 'last Name is required'],
+        trim: true
     },
-    email:{
-        type:String,
-        unique:true,
-        required:[true,'email is required'],
-        match:[/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, 'Please enter a valid email'],
-        trim:true
+    email: {
+        type: String,
+        unique: true,
+        required: [true, 'email is required'],
+        match: [/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, 'Please enter a valid email'],
+        trim: true
     },
-    password:{
-        type:String,
-        required:[true,'password is required'],
-        trim:true
+    password: {
+        type: String,
+        required: [true, 'password is required'],
+        trim: true
     },
-    phone:{
-        type:String,
-        required:[true,'phone is required'],
-        match:/^(?:\+971|00971|971|0)?(?:50|51|52|54|55|56|2|3|4|6|7|9)\d{7}$/m,
-        unique:true,
+    phone: {
+        type: String,
+        required: [true, 'phone is required'],
+        match: /^(?:\+971|00971|971|0)?(?:50|51|52|54|55|56|2|3|4|6|7|9)\d{7}$/,
+        unique: true,
     },
-    confirmPassword:{
-        type:Boolean,
-        default:false
+    confirmPassword: {
+        type: Boolean,
+        default: false
     },
-    role:{
-        type:String,
-        enum:['admin','user'],
-        default:'user'
+    role: {
+        type: String,
+        enum: ['admin', 'user'],
+        default: 'user'
     },
-    typeOfUser:{
-        type:String,
-        enum:["agent","devloper","owner"],
+    typeOfUser: {
+        type: String,
+        enum: ["agent", "developer", "owner"],
     },
-    refreshToken:{
-        type:String,
-        default:null
+    refreshToken: {
+        type: String,
+        default: null
     },
-    isBlocked:{
-        type:Boolean,
-        default:false
+    isBlocked: {
+        type: Boolean,
+        default: false
     },
-    isActive:{
-        type:Boolean,
-        default:false
+    isActive: {
+        type: Boolean,
+        default: false
     },
-    resetPasswordCode:{
-        type:Number,
-        default:null
+    resetPasswordCode: {
+        type: Number,
+        default: null
     },
-    resetPasswordExpiresAt:{
-        type:Date,
-        default:null
+    resetPasswordExpiresAt: {
+        type: Date,
+        default: null
     }
-},{timestamps:true});
+}, { timestamps: true });
 
-schema.plugin(mongoosePaginate)
-
-schema.pre('save',async ()=>{
-    const userName = this.firstName + ' ' + this.lastName
-    this.username = userName.toLowerCase().replace(/\s/g, '-')
-})
+schema.plugin(mongoosePaginate);
 
 export const User = mongoose.model('user', schema);

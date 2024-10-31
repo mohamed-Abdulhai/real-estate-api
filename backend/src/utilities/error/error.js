@@ -8,12 +8,8 @@ export class AppError extends Error {
 }
 
 
-export const catchError = (fn)=>{
-    return async(req,res,next)=>{
-        try{
-            await fn(req,res,next)
-        }catch(error){
-            next(new AppError(error.message, error.statusCodex, error.statusMessage))
-        }
+export const catchError= (fn)=>{
+    return (req,res,next)=>{
+        fn(req,res,next).catch((error)=>next(error))
     }
 }
