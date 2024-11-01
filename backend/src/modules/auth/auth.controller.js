@@ -7,6 +7,7 @@ import { sendEmail } from '../../utilities/error/email/confirmEmail/confirmEmail
 import { ConfirmEmailTemplate } from '../../utilities/error/email/confirmEmail/confirmEmailTemplate.js'
 import { resetPasswordTemplate } from '../../utilities/error/email/resetPasswordTemplate.js'
 import { generateAccessToken, generateRefreshToken } from './auth.middleware.js'
+import { Role } from '../../utilities/enum/enumRole.js'
 
 const isProduction = process.env.MOOD === 'production';
 
@@ -147,3 +148,15 @@ export const changePassword = catchError(async(req,res,next)=>{
     statusMessage:'Password changed successfully'
   })
 })
+
+export const checkAuth = catchError(async(req,res,next)=>{
+  return res.status(200).json({
+    statusMessage:'User is authenticated'
+  })  
+})
+
+export const checkAuthByRole = catchError(async (req, res) => {
+  return res.status(200).json({
+    statusMessage: "User authenticated as admin"
+  })
+});
