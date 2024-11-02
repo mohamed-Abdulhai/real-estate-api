@@ -37,23 +37,30 @@ export const generateRefreshToken = (id,role)=>{
     return refreshToken
 }
 
-export const authentication = catchError(async (req,res,next)=>{
-    const accessToken = req.cookies.accessToken
-    if(!accessToken) return next(new AppError('Unauthorized',401,'failed'))
-    
-    jwt.verify(accessToken,process.env.ACCESS_TOKEN_SECRET_KEY, (error,decoded)=>{
-        if(error) return next(new AppError('Invalid token or expired',401,'failed'))
-        req.user = decoded
-        next()
-    })
-})
+export  const generateConfrmToken = (id,email)=>{
+    const confirmToken = jwt.sign({id,email},process.env.SECRET_KEY,{subject:'confirmToken',expiresIn:'24h'})
+    return confirmToken
+}
+
+export const authentication = catchError(async (req, res, next) => {
+    const accessToken = req.cookies.accessToken;
+    if (!accessToken) return next(new AppError('Unauthorized', 401, 'failed'));
+
+    jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET_KEY, async(error, decoded) => {
+        if (error) return next(new AppError('Invalid token or expired', 401, 'failed'));
+        const {id} = decoded
+        const user = await User.findById(id)
+        if (!user) return next(new AppError('User was deleted or not found', 404, 'failed'));
+        req.user = decoded;
+        next();
+    });
+});
 
 export const authorize = (...roles) => {
     return (req, res, next) => {
-        if (!roles.includes(Number(req.user.role))) {
+        if (!roles.includes(req.user.role)) {
             return next(new AppError('Unauthorized', 403, 'failed'));
         }
         next();
     };
 };
-

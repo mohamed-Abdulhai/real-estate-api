@@ -6,7 +6,7 @@ import {User} from '../../../DB/models/user.model.js'
 import { sendEmail } from '../../utilities/error/email/confirmEmail/confirmEmail.js'
 import { ConfirmEmailTemplate } from '../../utilities/error/email/confirmEmail/confirmEmailTemplate.js'
 import { resetPasswordTemplate } from '../../utilities/error/email/resetPasswordTemplate.js'
-import { generateAccessToken, generateRefreshToken } from './auth.middleware.js'
+import { generateAccessToken, generateConfrmToken, generateRefreshToken } from './auth.middleware.js'
 import { Role } from '../../utilities/enum/enumRole.js'
 
 const isProduction = process.env.MOOD === 'production';
@@ -15,14 +15,7 @@ const isProduction = process.env.MOOD === 'production';
 export const register = catchError(async (req, res, next) => {
   const user = await User.create(req.body);
   
-  const token = jwt.sign(
-      { id: user._id },
-      process.env.SECRET_KEY,
-      { expiresIn: '24h' }
-  );
-
-  user.password = undefined;
-
+  const token = generateConfrmToken(user._id,user.email)
   sendEmail(user.email, 'Confirm Email', ConfirmEmailTemplate, token);
 
   return res.status(201).json({
@@ -35,11 +28,11 @@ export const login = catchError(async (req,res,next)=>{
   const {email,password} = req.body
   const user = await User.findOne({email})
   if(!user) return next(new AppError('Invalid email or password',422,'failed'))
-  if(!user.confirmPassword) return next(new AppError('Please confirm youre email',403,'failed'))
+  if(!user.confirmEmail) return next(new AppError('Please confirm youre email',403,'failed'))
     const matchPassword = bcrypt.compareSync(password,user.password)
   if(!matchPassword) return next(new AppError('Invalid email or password',422,'failed'))
-  const accessToken = generateAccessToken(user.email,user.role)
-  const refreshToken = generateRefreshToken(user.email)
+  const accessToken = generateAccessToken(user.id,user.role)
+  const refreshToken = generateRefreshToken(user.id,user.role)
   res.cookie('accessToken', accessToken, {
     httpOnly: true,
     maxAge: 15 * 60 * 1000, // 15 minutes

@@ -46,11 +46,10 @@ export const updateHandler = (model)=>{
 
 export const deleteSingleHandler = (model)=>{
     return catchError(async(req,res,next)=>{
-    const documents = await model.findByIdAndDelete(req.params.id)
-    if(!documents) return next(new AppError(`${model.collection.name} not found`, 404,'failed'))
+    const document = await model.findByIdAndDelete(req.params.id)
+    if(!document) return next(new AppError(`${model.collection.name} not found`, 404,'failed'))
     
     return res.status(200).json({
-        data: documents,
         statusMessage:`${model.collection.name} deleted successfully`
     })
 })

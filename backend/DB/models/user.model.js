@@ -34,12 +34,12 @@ const schema = new mongoose.Schema({
         match: /^(?:\+971|00971|971|0)?(?:50|51|52|54|55|56|2|3|4|6|7|9)\d{7}$/,
         unique: true,
     },
-    confirmPassword: {
+    confirmEmail: {
         type: Boolean,
         default: false
     },
     role: {
-        type: String,
+        type: Number,
         enum: [10, 20],
         default: 10
     },
