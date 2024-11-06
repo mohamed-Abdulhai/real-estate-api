@@ -18,8 +18,7 @@ lib-cov
 coverage/
 *.lcov
 # Node modules
-frontend/node_modules/
-backend/node_modules/
+node_modules/
 
 # Optional npm cache directory
 .npm
@@ -36,23 +35,17 @@ backend/node_modules/
 .env.development.local
 .env.test.local
 .env.production.local
-backend/.env
+.env
 
 
-# Frontend build output
-frontend/build/
-frontend/dist/
+
 
 #Backend uplods file
-backend/uplods/
+uplods/
 
 # Backend build output
-backend/build/
-backend/dist/
-
-# Frontend specific files
-frontend/.next/
-frontend/out/
+build/
+dist/
 
 # Parcel cache (used by Parcel bundler)
 .cache/
